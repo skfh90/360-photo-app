@@ -31,31 +31,185 @@ lowering it is possible — you would need to add pre-API-26 launcher icon PNGs.
 
 ## Offline Gradle 8.13 + caches
 
-This repository vendors **Gradle 8.13** and **this project's dependency
-caches only** (no Android SDK, emulator, platform-tools, build-tools, or
-Android Studio). Large artifacts are split into 20 MiB 7-Zip volumes, matching
-the [LocalPhoto360](https://github.com/skfh90/LocalPhoto360) GitHub layout.
+This repository vendors **Gradle 8.13** and **this project's Maven
+dependencies only**. It does **not** include an Android SDK, emulator,
+platform-tools, build-tools, NDK, JDK, or Android Studio — those have to
+already be on the air-gapped PC (or copied there separately).
 
-After clone, on a machine with [7-Zip](https://www.7-zip.org/):
+Large artifacts are split into **20 MiB 7-Zip volumes**, the same layout as
+[LocalPhoto360](https://github.com/skfh90/LocalPhoto360):
+
+| File | Role |
+| --- | --- |
+| `offline-gradle-8.13.7z.001` … `.022` | Split archive (~440 MB). **Every part is required.** |
+| [`extract-offline-gradle.bat`](extract-offline-gradle.bat) | Unpacks the volumes into `offline\` |
+
+After extract, `settings.gradle.kts` resolves plugins and libraries from
+`offline/maven-repo` first. The Gradle wrapper is pinned to a zip under
+`offline/wrapper/dists`, so it will not download Gradle 8.13 if that zip is
+present.
+
+### What the archive restores
+
+| Path | Contents |
+| --- | --- |
+| `offline/wrapper/dists/gradle-8.13-bin/…/gradle-8.13-bin.zip` | Gradle 8.13 distribution. The wrapper unpacks it on first run. |
+| `offline/maven-repo/` | This project's caches as a Maven repo: AGP 8.13.0, Kotlin 2.2.10, Compose, CameraX, OpenCV 4.12.0, JUnit, and their transitives. |
+
+There is no Foojay toolchain resolver. Gradle uses whatever JDK you point at
+with `JAVA_HOME`.
+
+### What you must provide on the offline PC
+
+| Need | Why | Typical copy |
+| --- | --- | --- |
+| **JDK 17** (or 21) | Compiles the app. Set `JAVA_HOME`. | Android Studio's `jbr` folder, or a Temurin 17 zip |
+| **Android SDK** | `compileSdk` 35. Not in this repo. | `platforms\android-35`, `build-tools\35.0.0`, `platform-tools` |
+| **7-Zip** | Only needed once, to unpack the volumes. | [7-Zip](https://www.7-zip.org/) installer, or `7z.exe` on a USB stick |
+| **This clone** | Source + all `offline-gradle-8.13.7z.*` parts | USB / sneakernet of the whole folder |
+
+A physical phone is still required to capture a sphere. An emulator can launch
+the UI; it cannot produce frames that stitch.
+
+### 1. Move the project onto the offline PC
+
+On a machine that **can** reach GitHub, clone or download the repo so every
+7-Zip part is present:
+
+```bat
+git clone https://github.com/skfh90/360-photo-app.git
+dir 360-photo-app\offline-gradle-8.13.7z.*
+```
+
+You should see `.001` through `.022`. If any part is missing, extract will fail
+with a truncated-archive error. Copy the **entire** project folder (source,
+wrapper scripts, and all `.7z.0xx` files) to the offline PC. A GitHub zip
+download of the repo is fine; Git LFS is not used.
+
+Copy 7-Zip onto that USB stick as well if the offline PC does not already have
+it.
+
+### 2. Unpack Gradle and the caches
+
+On the offline PC, from the project root:
 
 ```bat
 extract-offline-gradle.bat
 ```
 
-That restores `offline/wrapper/` (the Gradle 8.13 zip) and `offline/maven-repo/`
-(AGP, Kotlin, Compose, CameraX, OpenCV, …). `settings.gradle.kts` reads the
-maven-repo first. The wrapper is pinned to project-local
-`offline/wrapper/dists`, so it will not download Gradle if the zip is present.
+That script looks for `7z.exe` under `Program Files\7-Zip`, then extracts
+`offline-gradle-8.13.7z.001` (7-Zip follows the rest of the volumes
+automatically). When it finishes you should have:
+
+```
+offline\maven-repo\          (thousands of .jar / .pom / .aar files)
+offline\wrapper\dists\gradle-8.13-bin\...\gradle-8.13-bin.zip
+```
+
+Manual extract, if you prefer not to use the `.bat`:
 
 ```bat
-set GRADLE_USER_HOME=%CD%\offline\gradle-home
+"C:\Program Files\7-Zip\7z.exe" x -y -o. offline-gradle-8.13.7z.001
+```
+
+On Linux or macOS:
+
+```bash
+7z x -y -o. offline-gradle-8.13.7z.001
+```
+
+`offline/maven-repo` and `offline/wrapper` are gitignored. They exist only
+after this step. Do not commit them; the 7-Zip volumes are the source of
+truth on GitHub.
+
+### 3. Point Gradle at a JDK and the SDK
+
+Create `local.properties` in the project root (gitignored). Use the **offline
+PC's** paths, not the machine you cloned on:
+
+```properties
+sdk.dir=C:\\Android\\Sdk
+```
+
+Forward slashes also work: `sdk.dir=C:/Android/Sdk`. The directory must
+contain at least:
+
+```
+platforms/android-35/
+build-tools/35.0.0/
+platform-tools/
+licenses/
+```
+
+Set a JDK before any `gradlew` command:
+
+```bat
+set JAVA_HOME=C:\jdk-17
+set PATH=%JAVA_HOME%\bin;%PATH%
+java -version
+```
+
+`java -version` should print 17 or 21. Gradle 8.13 will not run on JDK 8.
+
+### 4. Build with no network
+
+`--offline` is what stops Gradle from calling Google Maven, Maven Central, or
+`services.gradle.org`. Run it from the project root after extract:
+
+```bat
 gradlew.bat --offline :app:assembleDebug
 ```
 
-`--offline` still needs a JDK 17 and an Android SDK on that machine; those are
-not included here.
+Debug APKs land in `app\build\outputs\apk\debug\`:
+
+| File | Device |
+| --- | --- |
+| `app-arm64-v8a-debug.apk` | almost every phone from the last several years |
+| `app-armeabi-v7a-debug.apk` | older 32-bit ARM |
+| `app-x86_64-debug.apk` | most emulators |
+
+Install with `adb` from the SDK's `platform-tools` (already on the USB SDK
+copy):
+
+```bat
+adb install -r app\build\outputs\apk\debug\app-arm64-v8a-debug.apk
+```
+
+Useful offline commands:
+
+```bat
+gradlew.bat --offline :app:testDebugUnitTest
+gradlew.bat --offline :app:lintDebug
+gradlew.bat --offline :app:installDebug
+```
+
+Do **not** set `GRADLE_USER_HOME` to `offline\gradle-home` unless you have
+populated that folder yourself. The checked-in caches are the Maven repo
+under `offline\maven-repo`; `settings.gradle.kts` already reads it. A empty
+`GRADLE_USER_HOME` override will hide the wrapper zip and look like a missing
+Gradle distribution.
+
+First `gradlew` run unpacks `gradle-8.13-bin.zip` next to itself. That does
+not need the internet if the zip is already there from step 2.
+
+### If something fails
+
+| Symptom | Likely cause |
+| --- | --- |
+| `Missing offline-gradle-8.13.7z.001` | Not running the `.bat` from the project root, or the volumes were not copied |
+| 7-Zip "Unexpected end of data" / missing volume | One of `.002`–`.022` is absent or truncated |
+| `SDK location not found` | No `local.properties`, or `sdk.dir` points at the online PC's path |
+| `Failed to install the following Android SDK packages` | SDK is incomplete: need platform 35 and build-tools 35.0.0 |
+| `Unsupported class file major version` / toolchain errors | JDK is too old; use 17+ |
+| Gradle tries to download `gradle-8.13-bin.zip` | Extract did not restore `offline\wrapper\dists\...` |
+| `Could not resolve` AGP / OpenCV / Compose with `--offline` | Extract did not restore `offline\maven-repo`, or `--offline` was used before extract |
+| Build works **without** `--offline` and hangs or fails **with** it | A dependency is missing from `offline/maven-repo` (report the coordinate) |
+
+Online machines can ignore this section and build as in [Build](#build);
+`offline/maven-repo` is consulted first, then Google Maven as a fallback.
 
 ## Build
+
 
 You need the Android SDK (compileSdk 35 + build-tools 35) and a JDK 17. The
 simplest route is Android Studio, which supplies both: open the project folder,
