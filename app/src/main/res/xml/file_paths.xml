@@ -12,4 +12,7 @@
     <cache-path
         name="spheres"
         path="spheres/" />
+    <files-path
+        name="rooms"
+        path="rooms/" />
 </paths>

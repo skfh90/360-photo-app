@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sphere_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/rooms_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="16dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rooms_title"
+            android:textColor="@color/sphere_on_surface"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <GridView
+            android:id="@+id/rooms_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:columnWidth="160dp"
+            android:gravity="center"
+            android:horizontalSpacing="12dp"
+            android:numColumns="2"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="12dp" />
+
+        <LinearLayout
+            android:id="@+id/rooms_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/rooms_empty_title"
+                android:textColor="@color/sphere_on_surface"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/rooms_empty_message"
+                android:textColor="@color/sphere_on_surface_variant"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/rooms_empty_action"
+                style="@style/Widget.PhotoSphere.PillButton"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
+                android:minWidth="200dp"
+                android:text="@string/rooms_empty_action" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

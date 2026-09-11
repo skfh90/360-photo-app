@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Signal colours: done / live target. -->
-    <color name="sphere_accent">#FF3DDC84</color>
-    <color name="sphere_accent_12">#1F3DDC84</color>
-    <color name="sphere_accent_16">#293DDC84</color>
-    <color name="sphere_accent_18">#2E3DDC84</color>
-    <color name="sphere_accent_22">#383DDC84</color>
-    <color name="sphere_active">#FFFFC24B</color>
-    <color name="sphere_active_10">#1AFFC24B</color>
+    <!-- Interior gallery: terracotta accent, walnut type, cream surfaces. -->
+    <color name="sphere_accent">#FFC4784A</color>
+    <color name="sphere_accent_12">#1FC4784A</color>
+    <color name="sphere_accent_16">#29C4784A</color>
+    <color name="sphere_accent_18">#2EC4784A</color>
+    <color name="sphere_accent_22">#38C4784A</color>
+    <color name="sphere_active">#FFD4A017</color>
+    <color name="sphere_active_10">#1AD4A017</color>
 
-    <!-- Surfaces. -->
-    <color name="sphere_background">#FF0A0D10</color>
-    <color name="sphere_surface">#FF12171B</color>
-    <color name="sphere_surface_high">#FF1B2228</color>
-    <color name="sphere_on_surface">#FFE7EDF1</color>
-    <color name="sphere_on_surface_variant">#FF9DA9B3</color>
-    <color name="sphere_outline">#FF333D45</color>
-    <color name="photo_well">#FF05070A</color>
+    <color name="sphere_background">#FFF6F1E8</color>
+    <color name="sphere_surface">#FFFFFDF8</color>
+    <color name="sphere_surface_high">#FFF3EBE0</color>
+    <color name="sphere_on_surface">#FF2C241C</color>
+    <color name="sphere_on_surface_variant">#FF6B5B4F</color>
+    <color name="sphere_outline">#FFD9CDBF</color>
+    <color name="photo_well">#FF1C1814</color>
 
-    <!-- Smoked glass over the viewfinder. -->
+    <!-- Light-on-dark chrome over the camera viewfinder. -->
     <color name="glass_surface">#8C000000</color>
     <color name="glass_surface_dim">#61000000</color>
     <color name="glass_content">#FFF2F5F7</color>
@@ -30,6 +29,6 @@
 
     <color name="reticle_white">#E6FFFFFF</color>
     <color name="shutter_flash">#2EFFFFFF</color>
-    <color name="error">#FFFF6B6B</color>
-    <color name="ic_launcher_background">#FF0B3D5C</color>
+    <color name="error">#FFB54A3C</color>
+    <color name="ic_launcher_background">#FFF6F1E8</color>
 </resources>

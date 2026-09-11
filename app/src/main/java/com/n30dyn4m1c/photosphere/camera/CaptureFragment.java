@@ -404,6 +404,31 @@ public class CaptureFragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!isAdded()) {
+            return;
+        }
+        if (hidden) {
+            if (tracker != null) {
+                tracker.stopListening();
+            }
+            unbindCamera();
+            if (getView() != null) {
+                getView().setKeepScreenOn(false);
+            }
+        } else {
+            if (tracker != null) {
+                tracker.startListening();
+            }
+            bindCamera();
+            if (getView() != null) {
+                getView().setKeepScreenOn(true);
+            }
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         if (threeATimeout != null) {
             mainHandler.removeCallbacks(threeATimeout);
@@ -412,8 +437,23 @@ public class CaptureFragment extends Fragment {
             mainHandler.removeCallbacks(snackbarHide);
         }
         dismissStitchDialog();
+        unbindCamera();
+        if (feedback != null) {
+            feedback.release();
+        }
+        if (tracker != null) {
+            tracker.setListener(null);
+        }
+        captureExecutor.shutdownNow();
+        super.onDestroyView();
+    }
+
+    private void unbindCamera() {
         imageCapture = null;
         boundCamera = null;
+        if (getContext() == null) {
+            return;
+        }
         ListenableFuture<ProcessCameraProvider> future =
                 ProcessCameraProvider.getInstance(requireContext());
         if (future.isDone()) {
@@ -423,14 +463,6 @@ public class CaptureFragment extends Fragment {
                 Log.w(TAG, "Could not release the camera", e);
             }
         }
-        if (feedback != null) {
-            feedback.release();
-        }
-        if (tracker != null) {
-            tracker.setListener(null);
-        }
-        captureExecutor.shutdownNow();
-        super.onDestroyView();
     }
 
     private void bindCamera() {
@@ -1336,7 +1368,7 @@ public class CaptureFragment extends Fragment {
                         bottom.getPaddingLeft(),
                         bottom.getPaddingTop(),
                         bottom.getPaddingRight(),
-                        insets.getSystemWindowInsetBottom() + dp(16)
+                        dp(16)
                 );
                 return insets;
             }

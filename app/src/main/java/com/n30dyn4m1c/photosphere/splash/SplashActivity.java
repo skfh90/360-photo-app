@@ -16,8 +16,8 @@ import com.n30dyn4m1c.photosphere.MainActivity;
 import com.n30dyn4m1c.photosphere.R;
 
 /**
- * Dark cinematic launch: a glowing globe spins once, the wordmark fades in,
- * then capture starts. Configuration changes skip the replay.
+ * Light interior launch: a room drawing eases in, the wordmark fades up,
+ * then the gallery starts. Configuration changes skip the replay.
  */
 public class SplashActivity extends AppCompatActivity {
 
@@ -32,11 +32,13 @@ public class SplashActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            getWindow().getDecorView().setSystemUiVisibility(flags);
         }
         if (savedInstanceState != null) {
             openMain(false);
@@ -44,9 +46,9 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_splash);
-        final SplashGlobeView globe = findViewById(R.id.splash_globe);
+        final SplashRoomView room = findViewById(R.id.splash_room);
         final View wordmark = findViewById(R.id.splash_wordmark);
-        globe.setPose(0f, 0f);
+        room.setPose(0f, 0f);
 
         animator = ValueAnimator.ofFloat(0f, 1f);
         animator.setDuration(DURATION_MS);
@@ -55,10 +57,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float t = (Float) animation.getAnimatedValue();
-                float appear = clamp((t - 0.02f) / 0.22f);
-                float spin = clamp(t / 0.78f);
-                globe.setPose(spin, appear);
-                float title = clamp((t - 0.42f) / 0.28f);
+                float appear = clamp((t - 0.04f) / 0.36f);
+                room.setPose(t, appear);
+                float title = clamp((t - 0.40f) / 0.28f);
                 wordmark.setAlpha(title);
                 wordmark.setTranslationY((1f - title) * dp(14));
             }
@@ -86,8 +87,7 @@ public class SplashActivity extends AppCompatActivity {
             return;
         }
         launched = true;
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, MainActivity.class));
         if (animate && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }

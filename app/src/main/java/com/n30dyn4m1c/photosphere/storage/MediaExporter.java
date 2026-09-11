@@ -49,7 +49,7 @@ public final class MediaExporter {
     private static final String TAG = "MediaExporter";
 
     /** Album the spheres are filed under, inside the public Pictures directory. */
-    public static final String ALBUM = "360Panoramas";
+    public static final String ALBUM = "InteriorPreview";
 
     /**
      * The album as MediaStore's {@code RELATIVE_PATH} wants it: relative to the shared

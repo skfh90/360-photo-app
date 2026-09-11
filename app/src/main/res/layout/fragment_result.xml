@@ -267,4 +267,42 @@
         android:textColor="@color/glass_content"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/preview_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/sphere_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/preview_empty_title"
+            android:textColor="@color/sphere_on_surface"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/preview_empty_message"
+            android:textColor="@color/sphere_on_surface_variant"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/preview_empty_action"
+            style="@style/Widget.PhotoSphere.PillButton"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:minWidth="200dp"
+            android:text="@string/preview_empty_action" />
+    </LinearLayout>
+
 </FrameLayout>

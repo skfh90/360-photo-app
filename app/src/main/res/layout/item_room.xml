@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_surface_card"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/room_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/sphere_surface_high"
+        android:contentDescription="@string/rooms_item_untitled"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/room_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/sphere_on_surface"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/room_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/sphere_on_surface_variant"
+        android:textSize="12sp" />
+</LinearLayout>

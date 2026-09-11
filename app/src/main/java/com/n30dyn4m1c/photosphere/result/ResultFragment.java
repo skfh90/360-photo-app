@@ -43,6 +43,7 @@ public class ResultFragment extends Fragment {
     public interface Host {
         SphereImageStore.StitchedSphere getSphere();
         void onTakeAnother();
+        void onCaptureRequested();
     }
 
     private static final String TAG = "PanoramaResult";
@@ -98,14 +99,22 @@ public class ResultFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        View empty = view.findViewById(R.id.preview_empty);
         SphereImageStore.StitchedSphere sphere = sphere();
         if (sphere == null) {
-            Host host = host();
-            if (host != null) {
-                host.onTakeAnother();
-            }
+            empty.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.preview_empty_action).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Host host = host();
+                    if (host != null) {
+                        host.onCaptureRequested();
+                    }
+                }
+            });
             return;
         }
+        empty.setVisibility(View.GONE);
 
         sphereGl = view.findViewById(R.id.sphere_gl);
         previewFlat = view.findViewById(R.id.preview_flat);
@@ -286,14 +295,10 @@ public class ResultFragment extends Fragment {
     }
 
     private void leave() {
-        if (exportState == EXPORT_DONE) {
-            Host host = host();
-            if (host != null) {
-                host.onTakeAnother();
-            }
-            return;
+        Host host = host();
+        if (host != null) {
+            host.onCaptureRequested();
         }
-        showDiscardDialog();
     }
 
     private void showDiscardDialog() {
@@ -458,7 +463,7 @@ public class ResultFragment extends Fragment {
                         bottom.getPaddingLeft(),
                         bottom.getPaddingTop(),
                         bottom.getPaddingRight(),
-                        insets.getSystemWindowInsetBottom() + dp(8)
+                        dp(8)
                 );
                 return insets;
             }
