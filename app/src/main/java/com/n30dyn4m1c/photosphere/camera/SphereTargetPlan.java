@@ -28,7 +28,8 @@ public final class SphereTargetPlan {
 
     /**
      * Elevations of each ring, in capture order: the horizon first (where
-     * the user is already pointing), then up, then down.
+     * the user is already pointing), then up, then down. Sphere FOV plans
+     * also append a dedicated nadir shot after these rings.
      */
     public static final List<Float> DEFAULT_RING_ELEVATIONS = Collections.unmodifiableList(
             Arrays.asList(0f, 30f, 60f, -30f, -60f)
@@ -82,6 +83,12 @@ public final class SphereTargetPlan {
      * degenerate and silently break the constant-overlap guarantee.
      */
     public static final float MAX_RING_ELEVATION_DEGREES = 75f;
+
+    /**
+     * Elevation of the dedicated feet shot appended after the downward rings.
+     * Short of −90° so the rotation-vector yaw does not gimbal-lock.
+     */
+    public static final float NADIR_ELEVATION_DEGREES = -85f;
 
     /** The single ring a {@link SphereCaptureScope#Ring} run walks. */
     private static final List<Float> RING_ELEVATIONS = Collections.unmodifiableList(
@@ -270,7 +277,29 @@ public final class SphereTargetPlan {
             }
         }
         float spacing = planned.getHorizontalDegrees() * (1f - targetOverlapFraction);
-        return createUnchecked(startYawDegrees, elevations, spacing);
+        SphereTargetPlan plan = createUnchecked(startYawDegrees, elevations, spacing);
+        if (scope == SphereCaptureScope.Sphere) {
+            return plan.withNadir(startYawDegrees);
+        }
+        return plan;
+    }
+
+    /** True for the dedicated ground shot, not ordinary downward rings. */
+    public static boolean isNadirElevation(float elevationDegrees) {
+        return elevationDegrees <= NADIR_ELEVATION_DEGREES + 1f;
+    }
+
+    /**
+     * Appends one extra band: a single marker almost straight down, aimed at
+     * the same start bearing the rest of the plan used.
+     */
+    public SphereTargetPlan withNadir(float yawDegrees) {
+        List<SphereTarget> nextTargets = new ArrayList<SphereTarget>(targets);
+        nextTargets.add(SphereTarget.atElevation(yawDegrees, NADIR_ELEVATION_DEGREES));
+        List<IntRange> nextRings = new ArrayList<IntRange>(rings);
+        int index = nextTargets.size() - 1;
+        nextRings.add(new IntRange(index, index));
+        return new SphereTargetPlan(nextTargets, nextRings);
     }
 
     private static SphereTargetPlan createUnchecked(

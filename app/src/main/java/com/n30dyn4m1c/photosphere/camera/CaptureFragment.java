@@ -1053,7 +1053,8 @@ public class CaptureFragment extends Fragment {
                 isHolding,
                 accuracy,
                 completedRings,
-                ringCount
+                ringCount,
+                plan != null ? plan.getOrNull(activeIndex) : null
         ));
 
         boolean canChange = canChangeScope();
@@ -1119,7 +1120,8 @@ public class CaptureFragment extends Fragment {
             boolean holding,
             OrientationAccuracy currentAccuracy,
             int completedRings,
-            int ringCount
+            int ringCount,
+            SphereTarget activeTarget
     ) {
         if (!isSensorAvailable) {
             return getString(R.string.capture_orientation_unavailable);
@@ -1141,6 +1143,9 @@ public class CaptureFragment extends Fragment {
         }
         if (holding) {
             return getString(R.string.capture_hint_hold);
+        }
+        if (activeTarget != null && activeTarget.isNadir()) {
+            return getString(R.string.capture_hint_nadir);
         }
         if (completedRings > 0) {
             return getString(R.string.capture_hint_ring_done, completedRings, ringCount);
@@ -1310,6 +1315,7 @@ public class CaptureFragment extends Fragment {
         bindStep(overlay.findViewById(R.id.step_2), 2, R.string.capture_step_2, R.string.capture_instructions_2);
         bindStep(overlay.findViewById(R.id.step_3), 3, R.string.capture_step_3, R.string.capture_instructions_3);
         bindStep(overlay.findViewById(R.id.step_4), 4, R.string.capture_step_4, R.string.capture_instructions_4);
+        bindStep(overlay.findViewById(R.id.step_5), 5, R.string.capture_step_5, R.string.capture_instructions_5);
     }
 
     private void bindStep(View step, int number, int label, int detail) {

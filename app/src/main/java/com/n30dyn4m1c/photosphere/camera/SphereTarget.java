@@ -52,6 +52,11 @@ public final class SphereTarget {
         return -pitchDegrees;
     }
 
+    /** True for the dedicated feet / ground shot at the bottom of a sphere run. */
+    public boolean isNadir() {
+        return SphereTargetPlan.isNadirElevation(getElevationDegrees());
+    }
+
     public double getDirectionX() {
         return directionX;
     }

@@ -193,7 +193,8 @@ public class SphereTargetPlanTest {
             SphereTarget target = targets.get(i);
             Assert.assertTrue(
                     "elevation " + target.getElevationDegrees() + " outside the band",
-                    Math.abs(target.getElevationDegrees()) <= 75f + TOLERANCE);
+                    target.isNadir()
+                            || Math.abs(target.getElevationDegrees()) <= 75f + TOLERANCE);
         }
     }
 
@@ -273,6 +274,41 @@ public class SphereTargetPlanTest {
     }
 
     @Test
+    public void aSphereCaptureEndsWithASingleNadirShot() {
+        float startYaw = -40f;
+        SphereTargetPlan sphere = SphereTargetPlan.createForFieldOfView(
+                startYaw,
+                new FieldOfView(52f, 66f),
+                SphereCaptureScope.Sphere);
+
+        IntRange nadirRing = sphere.getRings().get(sphere.getRingCount() - 1);
+        Assert.assertEquals("nadir is its own last band", nadirRing.first, nadirRing.last);
+        SphereTarget nadir = sphere.get(nadirRing.first);
+        Assert.assertEquals(
+                "nadir elevation",
+                SphereTargetPlan.NADIR_ELEVATION_DEGREES,
+                nadir.getElevationDegrees(),
+                TOLERANCE);
+        Assert.assertEquals("nadir yaw follows the start bearing", startYaw, nadir.getYawDegrees(), TOLERANCE);
+        Assert.assertTrue(nadir.isNadir());
+        Assert.assertEquals(1, countNadirTargets(sphere));
+    }
+
+    @Test
+    public void aRingCaptureDoesNotAddANadirShot() {
+        SphereTargetPlan ring = SphereTargetPlan.createForFieldOfView(
+                12f,
+                new FieldOfView(52f, 66f),
+                SphereCaptureScope.Ring);
+
+        Assert.assertEquals(0, countNadirTargets(ring));
+        List<SphereTarget> targets = ring.getTargets();
+        for (int i = 0; i < targets.size(); i++) {
+            Assert.assertFalse(targets.get(i).isNadir());
+        }
+    }
+
+    @Test
     public void ringsCoverThePlanExactlyOnceInOrder() {
         SphereTargetPlan plan = SphereTargetPlan.createForFieldOfView(
                 12f,
@@ -313,6 +349,17 @@ public class SphereTargetPlanTest {
         List<SphereTarget> equator = filterByElevation(plan.getTargets(), 0f);
         float separation = angularDistance(equator.get(0), equator.get(1));
         return 1f - separation / horizontalFov;
+    }
+
+    private int countNadirTargets(SphereTargetPlan plan) {
+        int count = 0;
+        List<SphereTarget> targets = plan.getTargets();
+        for (int i = 0; i < targets.size(); i++) {
+            if (targets.get(i).isNadir()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private List<SphereTarget> filterByElevation(List<SphereTarget> targets, float elevation) {

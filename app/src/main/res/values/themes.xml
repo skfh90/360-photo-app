@@ -37,6 +37,12 @@
         <item name="android:minHeight">40dp</item>
     </style>
 
+    <style name="Theme.PhotoSphere.Splash" parent="Theme.PhotoSphere">
+        <item name="android:windowBackground">@color/sphere_background</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:navigationBarColor">@color/sphere_background</item>
+    </style>
+
     <style name="Theme.PhotoSphere.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="colorPrimary">@color/sphere_accent</item>

@@ -24,6 +24,7 @@
     <string name="capture_lock_hint">Tap the viewfinder to focus</string>
     <string name="capture_lock_fixed">Fixed-focus lens</string>
     <string name="capture_hint_search">Move the reticle onto the marker</string>
+    <string name="capture_hint_nadir">Point the camera at your feet</string>
     <string name="capture_hint_hold">Hold still…</string>
     <string name="capture_hint_ring_done">Band %1$d of %2$d covered — stitch now, or keep going</string>
     <string name="capture_waiting_for_orientation">Finding your bearing…</string>
@@ -40,10 +41,14 @@
     <string name="capture_step_2">Aim &amp; hold</string>
     <string name="capture_step_3">Tap to focus</string>
     <string name="capture_step_4">Good scene</string>
+    <string name="capture_step_5">Feet last</string>
     <string name="capture_instructions_1">Stand in one spot and turn your body — don\'t walk.</string>
     <string name="capture_instructions_2">Line the reticle up with each marker and hold still — the shutter fires on its own.</string>
     <string name="capture_instructions_3">Tap the viewfinder to focus on the scene, just like a regular camera.</string>
     <string name="capture_instructions_4">Keep the phone at the same height and avoid blank walls and bright skies.</string>
+    <string name="capture_instructions_5">After the rings, tilt the camera down toward your feet for the ground.</string>
+    <string name="splash_title">Photo Sphere</string>
+    <string name="splash_subtitle">360°</string>
     <string name="capture_instructions_dismiss">Start capturing</string>
 
     <!-- Stitching. -->
