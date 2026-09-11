@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.n30dyn4m1c.photosphere.camera.TargetOverlayView
+        android:id="@+id/target_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_gradient_top" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_gradient_bottom" />
+
+    <ImageButton
+        android:id="@+id/button_undo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="start|top"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/bg_circle_glass"
+        android:contentDescription="@string/capture_undo"
+        android:padding="10dp"
+        android:src="@drawable/ic_undo"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/capture_top_hud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingTop="18dp"
+        android:paddingRight="24dp">
+
+        <LinearLayout
+            android:id="@+id/scope_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill_glass_dim"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/scope_sphere"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_scope_segment"
+                android:paddingLeft="16dp"
+                android:paddingTop="7dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="7dp"
+                android:text="@string/capture_scope_sphere"
+                android:textColor="@color/sphere_background"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/scope_ring"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_scope_segment"
+                android:paddingLeft="16dp"
+                android:paddingTop="7dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="7dp"
+                android:text="@string/capture_scope_ring"
+                android:textColor="@color/glass_content"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/progress_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_pill_glass"
+            android:gravity="center_horizontal"
+            android:minWidth="200dp"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingTop="11dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="11dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/progress_captured"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/glass_content"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/progress_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:paddingBottom="4dp"
+                    android:text="/ 0"
+                    android:textColor="@color/glass_content_dim"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/capture_progress_frames"
+                    android:textColor="@color/glass_content_dim"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="160dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="8dp"
+                android:max="1000"
+                android:progress="0"
+                android:progressTint="@color/sphere_accent"
+                android:progressBackgroundTint="@color/glass_content_75" />
+
+            <TextView
+                android:id="@+id/progress_rings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:textColor="@color/glass_content_dim"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chip_focus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_pill_glass"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="6dp"
+            android:paddingRight="13dp"
+            android:paddingBottom="6dp"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:background="@drawable/bg_focus_dot" />
+
+            <TextView
+                android:id="@+id/chip_focus_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:textColor="@color/glass_content_88"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/capture_bottom_hud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="26dp">
+
+        <TextView
+            android:id="@+id/hint_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_hint_card"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingTop="13dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="13dp"
+            android:text="@string/capture_starting"
+            android:textColor="@color/glass_content"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/debug_toggles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/debug_distortion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/glass_content_dim"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/debug_refine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/glass_content_dim"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/debug_seam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/glass_content_dim"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/debug_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/glass_content_dim"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_finish"
+            style="@style/Widget.PhotoSphere.PillButton"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/capture_finish_stitch"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_restart"
+            style="@style/Widget.PhotoSphere.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/capture_restart"
+            android:textColor="@color/glass_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/instructions_overlay"
+        layout="@layout/overlay_capture_instructions" />
+
+    <TextView
+        android:id="@+id/snackbar_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_hint_card"
+        android:padding="14dp"
+        android:textColor="@color/glass_content"
+        android:visibility="gone" />
+
+</FrameLayout>

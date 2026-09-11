@@ -10,20 +10,16 @@
 .cxx
 local.properties
 
-# Local OpenCV SDK, if you use Option B from the README.
 /third_party/
-
-# Built APKs. A debug build is ~43 MB because OpenCV ships native libraries for
-# every ABI, so committing one per rebuild grows the history by that much each
-# time. Test builds are published as GitHub Release assets instead — see the
-# "Test builds" section of the README.
 *.apk
 
-# Unpacked Gradle 8.13 dist + this project's dependency caches.
-# GitHub carries them as 20 MiB 7-Zip volumes (offline-gradle-8.13.7z.*),
-# the same layout as the LocalPhoto360 / 360photos repos. Run
-# extract-offline-gradle.bat after clone.
+# Unpacked Gradle 6.7 dist + this project's dependency caches.
+# GitHub carries them as 20 MiB 7-Zip volumes (offline-gradle-6.7.7z.*).
+# Run extract-offline-gradle.bat after clone.
 /offline/maven-repo/
+/offline/maven-repo-old-813/
 /offline/gradle-home/
 /offline/tmp-gradle-home/
 /offline/wrapper/
+/offline/toolchain/
+/app/libs/*.aar

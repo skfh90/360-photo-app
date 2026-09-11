@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-        The window background the platform paints before Compose takes over.
-        Must stay in step with SphereBackground in ui/theme/Color.kt: any
-        difference between the two shows up as a flash of the wrong dark on
-        every cold start.
-    -->
+    <!-- Signal colours: done / live target. -->
+    <color name="sphere_accent">#FF3DDC84</color>
+    <color name="sphere_accent_12">#1F3DDC84</color>
+    <color name="sphere_accent_16">#293DDC84</color>
+    <color name="sphere_accent_18">#2E3DDC84</color>
+    <color name="sphere_accent_22">#383DDC84</color>
+    <color name="sphere_active">#FFFFC24B</color>
+    <color name="sphere_active_10">#1AFFC24B</color>
+
+    <!-- Surfaces. -->
     <color name="sphere_background">#FF0A0D10</color>
+    <color name="sphere_surface">#FF12171B</color>
+    <color name="sphere_surface_high">#FF1B2228</color>
+    <color name="sphere_on_surface">#FFE7EDF1</color>
+    <color name="sphere_on_surface_variant">#FF9DA9B3</color>
+    <color name="sphere_outline">#FF333D45</color>
+    <color name="photo_well">#FF05070A</color>
+
+    <!-- Smoked glass over the viewfinder. -->
+    <color name="glass_surface">#8C000000</color>
+    <color name="glass_surface_dim">#61000000</color>
+    <color name="glass_content">#FFF2F5F7</color>
+    <color name="glass_content_88">#E0F2F5F7</color>
+    <color name="glass_content_75">#BFF2F5F7</color>
+    <color name="glass_content_dim">#9EF2F5F7</color>
+    <color name="chrome_scrim">#99000000</color>
+    <color name="instructions_scrim">#80000000</color>
+
+    <color name="reticle_white">#E6FFFFFF</color>
+    <color name="shutter_flash">#2EFFFFFF</color>
+    <color name="error">#FFFF6B6B</color>
     <color name="ic_launcher_background">#FF0B3D5C</color>
 </resources>

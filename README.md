@@ -2,8 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://www.android.com/)
-[![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg)](https://kotlinlang.org/)
-[![CI](https://github.com/n30dyn4m1c/360-photo-app/actions/workflows/android.yml/badge.svg)](https://github.com/n30dyn4m1c/360-photo-app/actions/workflows/android.yml)
+[![Java](https://img.shields.io/badge/Language-Java-orange.svg)](https://www.java.com/)
 
 **Android app for guided capture and stitching of 360° photo spheres.**
 
@@ -14,59 +13,60 @@ captured frames into a 2:1 equirectangular image — and **publishing**: GPano X
 metadata is injected so viewers open the result as a pannable 360 photo, and a
 result screen offers it to the gallery and the share sheet.
 
+The project is **Java 8 only** (no Kotlin, no Jetpack Compose). The UI is
+AppCompat + XML fragments.
+
 ## Requirements
 
 | Tool | Version |
 | --- | --- |
-| Android Gradle Plugin | 8.13.0 |
-| Gradle | 8.13 (via wrapper) |
-| Kotlin | 2.2.10 |
-| JDK | 17 |
-| compileSdk / targetSdk | 35 |
-| minSdk | 26 |
+| Android Gradle Plugin | 4.1.3 |
+| Gradle | 6.7 (via wrapper) |
+| Language | Java 8 |
+| JDK | 11 (Gradle 6.7 will not start on JDK 16+) |
+| compileSdk / targetSdk | 29 |
+| minSdk | 21 |
+| build-tools | 29.0.3 |
 
-`minSdk` is 26 so the project can rely on adaptive launcher icons and modern
-camera2 behaviour without legacy fallbacks. CameraX itself supports API 21+, so
-lowering it is possible — you would need to add pre-API-26 launcher icon PNGs.
+## Offline Gradle 6.7 + caches
 
-## Offline Gradle 8.13 + caches
-
-This repository vendors **Gradle 8.13** and **this project's Maven
-dependencies only**. It does **not** include an Android SDK, emulator,
-platform-tools, build-tools, NDK, JDK, or Android Studio — those have to
-already be on the air-gapped PC (or copied there separately).
+This repository vendors **Gradle 6.7**, **AGP 4.1.3**, CameraX 1.0.2, and
+**this project's Maven dependencies**. It also restores a Java 8-repacked
+OpenCV 4.12.0 AAR under `app/libs/`. It does **not** include an Android SDK,
+emulator, platform-tools, build-tools, NDK, JDK, or Android Studio — those
+have to already be on the air-gapped PC (or copied there separately).
 
 Large artifacts are split into **20 MiB 7-Zip volumes**, the same layout as
 [LocalPhoto360](https://github.com/skfh90/LocalPhoto360):
 
 | File | Role |
 | --- | --- |
-| `offline-gradle-8.13.7z.001` … `.022` | Split archive (~440 MB). **Every part is required.** |
-| [`extract-offline-gradle.bat`](extract-offline-gradle.bat) | Unpacks the volumes into `offline\` |
+| `offline-gradle-6.7.7z.001` … | Split archive. **Every part is required.** |
+| [`extract-offline-gradle.bat`](extract-offline-gradle.bat) | Unpacks the volumes into `offline\` and `app\libs\` |
 
-After extract, `settings.gradle.kts` resolves plugins and libraries from
-`offline/maven-repo` first. The Gradle wrapper is pinned to a zip under
-`offline/wrapper/dists`, so it will not download Gradle 8.13 if that zip is
+After extract, `settings.gradle` / `build.gradle` resolve plugins and libraries
+from `offline/maven-repo` first. The Gradle wrapper is pinned to a zip under
+`offline/wrapper/dists`, so it will not download Gradle 6.7 if that zip is
 present.
+
+There is no Foojay toolchain resolver and no Kotlin plugin.
 
 ### What the archive restores
 
 | Path | Contents |
 | --- | --- |
-| `offline/wrapper/dists/gradle-8.13-bin/…/gradle-8.13-bin.zip` | Gradle 8.13 distribution. The wrapper unpacks it on first run. |
-| `offline/maven-repo/` | This project's caches as a Maven repo: AGP 8.13.0, Kotlin 2.2.10, Compose, CameraX, OpenCV 4.12.0, JUnit, and their transitives. |
-
-There is no Foojay toolchain resolver. Gradle uses whatever JDK you point at
-with `JAVA_HOME`.
+| `offline/wrapper/dists/gradle-6.7-bin/…/gradle-6.7-bin.zip` | Gradle 6.7 distribution. The wrapper unpacks it on first run. |
+| `offline/maven-repo/` | AGP 4.1.3, AndroidX (AppCompat, CameraX 1.0.2, ExifInterface), JUnit, and transitives. |
+| `app/libs/opencv-4.12.0.aar` | OpenCV native libs + Java 8 `classes.jar` (the Maven Central AAR is Java 17 and cannot be dexed by build-tools 29). |
 
 ### What you must provide on the offline PC
 
 | Need | Why | Typical copy |
 | --- | --- | --- |
-| **JDK 17** (or 21) | Compiles the app. Set `JAVA_HOME`. | Android Studio's `jbr` folder, or a Temurin 17 zip |
-| **Android SDK** | `compileSdk` 35. Not in this repo. | `platforms\android-35`, `build-tools\35.0.0`, `platform-tools` |
+| **JDK 11** | Gradle 6.7 runs on JDK 8–15. JDK 11 is the one to use. | Microsoft / Temurin 11 zip |
+| **Android SDK 29** | `compileSdk` / `targetSdk` 29. Not in this repo. | `platforms\android-29`, `build-tools\29.0.3`, `platform-tools` |
 | **7-Zip** | Only needed once, to unpack the volumes. | [7-Zip](https://www.7-zip.org/) installer, or `7z.exe` on a USB stick |
-| **This clone** | Source + all `offline-gradle-8.13.7z.*` parts | USB / sneakernet of the whole folder |
+| **This clone** | Source + all `offline-gradle-6.7.7z.*` parts | USB / sneakernet of the whole folder |
 
 A physical phone is still required to capture a sphere. An emulator can launch
 the UI; it cannot produce frames that stitch.
@@ -78,13 +78,13 @@ On a machine that **can** reach GitHub, clone or download the repo so every
 
 ```bat
 git clone https://github.com/skfh90/360-photo-app.git
-dir 360-photo-app\offline-gradle-8.13.7z.*
+dir 360-photo-app\offline-gradle-6.7.7z.*
 ```
 
-You should see `.001` through `.022`. If any part is missing, extract will fail
-with a truncated-archive error. Copy the **entire** project folder (source,
-wrapper scripts, and all `.7z.0xx` files) to the offline PC. A GitHub zip
-download of the repo is fine; Git LFS is not used.
+You should see every `.001`, `.002`, … part. If any part is missing, extract
+will fail with a truncated-archive error. Copy the **entire** project folder
+(source, wrapper scripts, and all `.7z.0xx` files) to the offline PC. A GitHub
+zip download of the repo is fine; Git LFS is not used.
 
 Copy 7-Zip onto that USB stick as well if the offline PC does not already have
 it.
@@ -98,24 +98,25 @@ extract-offline-gradle.bat
 ```
 
 That script looks for `7z.exe` under `Program Files\7-Zip`, then extracts
-`offline-gradle-8.13.7z.001` (7-Zip follows the rest of the volumes
+`offline-gradle-6.7.7z.001` (7-Zip follows the rest of the volumes
 automatically). When it finishes you should have:
 
 ```
-offline\maven-repo\          (thousands of .jar / .pom / .aar files)
-offline\wrapper\dists\gradle-8.13-bin\...\gradle-8.13-bin.zip
+offline\maven-repo\          (jars / poms / aars for AGP 4.1.3 + AndroidX)
+offline\wrapper\dists\gradle-6.7-bin\...\gradle-6.7-bin.zip
+app\libs\opencv-4.12.0.aar
 ```
 
 Manual extract, if you prefer not to use the `.bat`:
 
 ```bat
-"C:\Program Files\7-Zip\7z.exe" x -y -o. offline-gradle-8.13.7z.001
+"C:\Program Files\7-Zip\7z.exe" x -y -o. offline-gradle-6.7.7z.001
 ```
 
 On Linux or macOS:
 
 ```bash
-7z x -y -o. offline-gradle-8.13.7z.001
+7z x -y -o. offline-gradle-6.7.7z.001
 ```
 
 `offline/maven-repo` and `offline/wrapper` are gitignored. They exist only
@@ -135,21 +136,22 @@ Forward slashes also work: `sdk.dir=C:/Android/Sdk`. The directory must
 contain at least:
 
 ```
-platforms/android-35/
-build-tools/35.0.0/
+platforms/android-29/
+build-tools/29.0.3/
 platform-tools/
 licenses/
 ```
 
-Set a JDK before any `gradlew` command:
+Set **JDK 11** before any `gradlew` command. Gradle 6.7 will not start on
+JDK 16, 17, 21, or 25:
 
 ```bat
-set JAVA_HOME=C:\jdk-17
+set JAVA_HOME=C:\jdk-11
 set PATH=%JAVA_HOME%\bin;%PATH%
 java -version
 ```
 
-`java -version` should print 17 or 21. Gradle 8.13 will not run on JDK 8.
+`java -version` should print 11.
 
 ### 4. Build with no network
 
@@ -185,24 +187,25 @@ gradlew.bat --offline :app:installDebug
 
 Do **not** set `GRADLE_USER_HOME` to `offline\gradle-home` unless you have
 populated that folder yourself. The checked-in caches are the Maven repo
-under `offline\maven-repo`; `settings.gradle.kts` already reads it. A empty
+under `offline\maven-repo`; `settings.gradle` already reads it. An empty
 `GRADLE_USER_HOME` override will hide the wrapper zip and look like a missing
 Gradle distribution.
 
-First `gradlew` run unpacks `gradle-8.13-bin.zip` next to itself. That does
+First `gradlew` run unpacks `gradle-6.7-bin.zip` next to itself. That does
 not need the internet if the zip is already there from step 2.
 
 ### If something fails
 
 | Symptom | Likely cause |
 | --- | --- |
-| `Missing offline-gradle-8.13.7z.001` | Not running the `.bat` from the project root, or the volumes were not copied |
-| 7-Zip "Unexpected end of data" / missing volume | One of `.002`–`.022` is absent or truncated |
+| `Missing offline-gradle-6.7.7z.001` | Not running the `.bat` from the project root, or the volumes were not copied |
+| 7-Zip "Unexpected end of data" / missing volume | One of the later `.0xx` parts is absent or truncated |
 | `SDK location not found` | No `local.properties`, or `sdk.dir` points at the online PC's path |
-| `Failed to install the following Android SDK packages` | SDK is incomplete: need platform 35 and build-tools 35.0.0 |
-| `Unsupported class file major version` / toolchain errors | JDK is too old; use 17+ |
-| Gradle tries to download `gradle-8.13-bin.zip` | Extract did not restore `offline\wrapper\dists\...` |
-| `Could not resolve` AGP / OpenCV / Compose with `--offline` | Extract did not restore `offline\maven-repo`, or `--offline` was used before extract |
+| `Failed to install the following Android SDK packages` | SDK is incomplete: need platform 29 and build-tools 29.0.3 |
+| `Unsupported class file major version` / Gradle will not start | JDK is 16+; use JDK 11 |
+| Gradle tries to download `gradle-6.7-bin.zip` | Extract did not restore `offline\wrapper\dists\...` |
+| `Could not find opencv-4.12.0.aar` | Extract did not restore `app\libs\opencv-4.12.0.aar` |
+| `Could not resolve` AGP / CameraX with `--offline` | Extract did not restore `offline\maven-repo`, or `--offline` was used before extract |
 | Build works **without** `--offline` and hangs or fails **with** it | A dependency is missing from `offline/maven-repo` (report the coordinate) |
 
 Online machines can ignore this section and build as in [Build](#build);
@@ -211,9 +214,9 @@ Online machines can ignore this section and build as in [Build](#build);
 ## Build
 
 
-You need the Android SDK (compileSdk 35 + build-tools 35) and a JDK 17. The
-simplest route is Android Studio, which supplies both: open the project folder,
-let it sync, and it writes `local.properties` for you. From the command line:
+You need the Android SDK (compileSdk 29 + build-tools 29.0.3) and **JDK 11**.
+Android Studio can still open the project if you point it at JDK 11 and SDK 29.
+From the command line:
 
 ```bash
 # Point the build at your SDK (or let Android Studio create this file).

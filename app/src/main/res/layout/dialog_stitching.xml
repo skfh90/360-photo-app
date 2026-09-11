@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="28dp"
+    android:paddingTop="30dp"
+    android:paddingRight="28dp"
+    android:paddingBottom="30dp">
+
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp">
+
+        <ProgressBar
+            android:id="@+id/stitch_spinner"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:indeterminateTint="@color/sphere_accent" />
+
+        <ProgressBar
+            android:id="@+id/stitch_ring"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:indeterminate="false"
+            android:max="1000"
+            android:progressDrawable="@drawable/bg_circular_progress"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/stitch_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/sphere_on_surface"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/stitch_title"
+        android:textColor="@color/sphere_on_surface"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/stitch_stage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="@string/stitch_stage_preparing"
+        android:textColor="@color/sphere_on_surface_variant" />
+
+    <Button
+        android:id="@+id/stitch_cancel"
+        style="@style/Widget.PhotoSphere.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/stitch_cancel"
+        android:textColor="@color/sphere_on_surface_variant" />
+
+</LinearLayout>
