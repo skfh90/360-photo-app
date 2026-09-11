@@ -12,6 +12,7 @@ local.properties
 
 /third_party/
 *.apk
+!apk/*.apk
 
 # Unpacked Gradle 6.7 dist + this project's dependency caches.
 # GitHub carries them as 20 MiB 7-Zip volumes (offline-gradle-6.7.7z.*).
